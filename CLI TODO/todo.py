@@ -97,7 +97,11 @@ user_selection = 0
 print(welcome_message)
 while user_selection != 6:
     print(selection)
-    user_selection = int(input("Enter your choice: "))
+    try:
+        user_selection = int(input("Enter your choice: "))
+    except ValueError:
+        print("Invalid input. Please enter a number between 1 and 6.")
+        continue
 
     match user_selection:
         case 1:
