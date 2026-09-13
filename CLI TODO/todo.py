@@ -6,20 +6,35 @@ welcome_message = "Welcome to the TODO APP!"
 # Structure: {task_id: {"title": str, "description": str, "status": str}}
 datasource = {}
 task_id_counter = 1
-
+status_options = ["New", "In Progress", "Complete"]
 
 def add_task():
     global task_id_counter
 
     task_id = task_id_counter
-    task_id_counter += 1
-    title = input("Enter the title of the task: ")
-    description = input("Enter the description of the task: ")
+    
+    while True:
+        title = input("Enter the title of the task: ")
+        if title:
+            break
+        print("Title cannot be empty. Please enter a valid title.")
+    
+    while True:
+        description = input("Enter the description of the task: ")
+        if description:
+            break
+        print("Description cannot be empty. Please enter a valid description.")
+    status = input("Enter the status of the task (New, In Progress, Complete): ")
+    # Validate the status input
+    while status not in status_options:
+        print("Invalid status. Please enter a valid status (New, In Progress, Complete).")
+        status = input("Enter the status of the task (New, In Progress, Complete): ")
     datasource[task_id] = {
         "title": title,
         "description": description,
-        "status": "new",
+        "status": status,
     }
+    task_id_counter += 1
 
 
 def view_task():
@@ -32,12 +47,16 @@ def view_task():
             f"Task ID: {task_id}, Title: {task['title']}, "
             f"Description: {task['description']}, Status: {task['status']}"
         )
-    time.sleep(2)
+    
 
 
 def complete_task():
     view_task()
-    task_id = int(input("Enter the task ID to mark as complete: "))
+    try:
+        task_id = int(input("Enter the task ID to mark as complete: "))
+    except ValueError:
+        print("Invalid input. Please enter a valid task ID.")
+        return
 
     if task_id in datasource:
         datasource[task_id]["status"] = "Complete"
@@ -49,22 +68,27 @@ def complete_task():
 
 def update_task():
     view_task()
-    task_id = int(input("Enter the task ID to update: "))
-
+    time.sleep(2)
+    try:
+        task_id = int(input("Enter the task ID to update: "))
+    except ValueError:
+        print("Invalid input. Please enter a valid task ID.")
+        return 
+    
     if task_id in datasource:
         title = input("Enter the new title of the task:")
         description = input("Enter the new description of the task:")
-        status = input("Enter the new status of the task:")
-        backup_task = datasource[task_id]
+        status = input("Enter the new status of the task (New, In Progress, Complete): ")
+        if status != "":
+            while (status not in status_options):
+                print("Invalid status. Please enter a valid status (New, In Progress, Complete).")
+                status = input("Enter the status of the task (New, In Progress, Complete): ")
+            
 
-        title = title if title else backup_task["title"]
-        description = description if description else backup_task["description"]
-        status = status if status else backup_task["status"]
-        datasource[task_id] = {
-            "title": title,
-            "description": description,
-            "status": status,
-        }
+    
+        datasource[task_id]["title"]= title if title else datasource[task_id]["title"]     
+        datasource[task_id]["description"] = description if description else datasource[task_id]["description"]
+        datasource[task_id]["status"] = status if status else datasource[task_id]["status"]
         print("Task updated successfully.")
     else:
         print("Invalid task ID. Please try again.")
@@ -73,7 +97,12 @@ def update_task():
 
 def delete_task():
     view_task()
-    task_id = int(input("Enter the task ID to delete: "))
+    time.sleep(2)
+    try:
+        task_id = int(input("Enter the task ID to delete: "))
+    except ValueError:
+        print("Invalid input. Please enter a valid task ID.")
+        return 
 
     if task_id in datasource:
         del datasource[task_id]
