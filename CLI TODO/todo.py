@@ -1,3 +1,4 @@
+import json
 import time
 
 welcome_message = "Welcome to the TODO APP!"
@@ -8,6 +9,17 @@ datasource = {}
 task_id_counter = 1
 status_options = ["New", "In Progress", "Complete"]
 
+#loading existing tasks from the JSON file if it exists
+try:
+    with open("D:\\Dev\\Python\\Basics\\Python_26\\CLI TODO\\data\\todo.json", "r") as f:
+        datasource = json.load(f)
+        if datasource:
+            task_id_counter = int(max(datasource.keys())) + 1
+except FileNotFoundError:
+    pass
+
+
+json_file_path = "D:\\Dev\\Python\\Basics\\Python_26\\CLI TODO\\data\\todo.json"
 def add_task():
     global task_id_counter
 
@@ -52,12 +64,7 @@ def view_task():
 
 def complete_task():
     view_task()
-    try:
-        task_id = int(input("Enter the task ID to mark as complete: "))
-    except ValueError:
-        print("Invalid input. Please enter a valid task ID.")
-        return
-
+    task_id =input("Enter the task ID to mark as complete: ") 
     if task_id in datasource:
         datasource[task_id]["status"] = "Complete"
         print("Task marked as complete")
@@ -69,12 +76,9 @@ def complete_task():
 def update_task():
     view_task()
     time.sleep(2)
-    try:
-        task_id = int(input("Enter the task ID to update: "))
-    except ValueError:
-        print("Invalid input. Please enter a valid task ID.")
-        return 
-    
+
+    task_id = input("Enter the task ID to update: ")
+   
     if task_id in datasource:
         title = input("Enter the new title of the task:")
         description = input("Enter the new description of the task:")
@@ -98,12 +102,7 @@ def update_task():
 def delete_task():
     view_task()
     time.sleep(2)
-    try:
-        task_id = int(input("Enter the task ID to delete: "))
-    except ValueError:
-        print("Invalid input. Please enter a valid task ID.")
-        return 
-
+    task_id = input("Enter the task ID to delete: ")
     if task_id in datasource:
         del datasource[task_id]
         print("Task deleted successfully.")
@@ -125,6 +124,7 @@ user_selection = 0
 # Program starts here.
 print(welcome_message)
 while user_selection != 6:
+    json_file = json.dumps(datasource)
     print(selection)
     try:
         user_selection = int(input("Enter your choice: "))
@@ -147,3 +147,8 @@ while user_selection != 6:
             print("Exiting the TODO APP")
         case _:
             print("Invalid selection. Please try again.")
+            
+json_file = json.dumps(datasource)
+with open(json_file_path, "w") as f:
+    f.write(json_file)
+
