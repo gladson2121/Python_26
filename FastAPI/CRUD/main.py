@@ -1,13 +1,17 @@
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 import mysql.connector
 import hashlib
+import os
+
+load_dotenv()  # Load environment variables from .env file
 
 mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",        
-    password="Root@2026",
-    database="mydatabase"
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME")
 )
 
 #create a cursor object
